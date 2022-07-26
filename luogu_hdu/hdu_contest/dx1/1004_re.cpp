@@ -33,8 +33,8 @@ tp dist[maxn*maxn];//dist,i,j
 int cnt;
 bitset<2005> bs[maxn];//0=bigger,1=smaller
 signed main(){
-	freopen("1004.in","r",stdin);
-	//ios::sync_with_stdio(false),cin.tie(nullptr);
+	//freopen("1004.in","r",stdin);
+	ios::sync_with_stdio(false),cin.tie(nullptr);
 	EulerSieve(maxm-1);
 	cin>>t;
 	while(t--){
@@ -50,10 +50,10 @@ signed main(){
 		sort(dist+1,dist+cnt+1);
 		int ans=0;
 		rep(i,1,cnt){
-			if(notPrime[get<0>(dist[i])])continue;
 			int x=get<1>(dist[i]);
 			int y=get<2>(dist[i]);
-			ans+=(bs[x]^bs[y]).count();
+			if(notPrime[get<0>(dist[i])]==false)
+				ans+=(bs[x]^bs[y]).count();
 			bs[x][y]=1;
 			bs[y][x]=1;
 		}
