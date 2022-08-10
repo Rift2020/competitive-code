@@ -7,8 +7,11 @@
 #define per(i, a, b) for (int i = (a); i >= (b); --i)
 #define x first
 #define y second
+#define int ll
+#define divCeil(a,b) ((a<0||a%b==0)?a/b:a/b+1)
+#define divFloor(a,b) ((a>0||a%b==0)?a/b:a/b-1)
+
 using namespace std;
-using pr = pair<int,int>;
 using ll = long long;
 int exgcd(int a,int b,int &x,int &y){
 	if(b==0){
@@ -40,16 +43,35 @@ signed main(){
 		int x,y,g;
 		g=exgcd(a,b,x,y);
 		//cout<<g<<endl;
-		//x*=c/__gcd(a,b);
-		//y*=c/__gcd(a,b);
-		int a2=a/g,b2=b/g;
-		int l=(-x-1)/b2+1;
-		int r=y/a2;
-		if(l>r){
-			cout<<x+b2*l<<" "<<y-a2*r<<endl;
+		x*=c/__gcd(a,b);
+		y*=c/__gcd(a,b);
+		//cout<<"x,y "<<x<<" "<<y<<endl;
+		a=a/g,b=b/g;
+		int l=divCeil(-x,b);
+		if(-x%b==0)++l;
+		int r=divFloor(y,a);
+		if(y%a==0)--r;
+		/*
+		int l=-x/b;
+		if((-x<0&&-x%b==0)||-x>=0)l++;
+		int r=y/a;
+		if(y<0||y%a==0)r--;
+		*/
+		//cout<<"a,b "<<a<<" "<<b<<endl;
+		//cout<<"l,r "<<l<<" "<<r<<endl;
+		//cout<<"g:"<<c/g<<endl;
+		if(fl){
+			swap(x,y);
+			swap(a,b);
+			swap(l,r);
+			a=-a;
+			b=-b;
+		}
+		if(l>r&&fl==false||l<r&&fl==true){
+			cout<<x+b*l<<" "<<y-a*r<<endl;
 		}
 		else{
-			cout<<r-l+1<<" "<<x+b2*l<<" "<<y-a2*r<<" "<<x+b2*r<<" "<<y-a2*l<<endl;
+			cout<<max(l,r)-min(l,r)+1<<" "<<x+b*l<<" "<<y-a*r<<" "<<x+b*r<<" "<<y-a*l<<endl;
 		}
 	}
 	
