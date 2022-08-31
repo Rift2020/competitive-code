@@ -1,17 +1,18 @@
 /**
  *    author:  Rift
- *    created: 2022.08.22  14:54
+ *    created: 2022.08.23  12:02
 **/
 #include<bits/stdc++.h>
 #define rep(i, a, b) for (int i = (a); i <= (b); ++i)
 #define per(i, a, b) for (int i = (a); i >= (b); --i)
 #define x first
 #define y second
-#define maxmod 1000005
+#define maxfact 35618
 using namespace std;
 using ll = long long;
 using pr = pair<int,int>;
-ll fac[maxmod];
+ll *fac;
+ll fact[30][maxfact];
 ll inline fpow(ll x,ll n){
     ll re=1;
     while(n){
@@ -67,7 +68,7 @@ ll inline vn(ll n,ll p){
 		re+=n/pp;
 	return re;
 }
-void pre_cal(ll p,ll pk){
+void pre_cal(ll *fac,ll p,ll pk){
 	fac[0]=fac[1]=1;
 	for(int i=2;i<=pk;++i){
 		if(i%p==0)fac[i]=fac[i-1];
@@ -85,8 +86,9 @@ ll cal(ll n,ll p,ll pk){
 	a=a*fac[n%pk]%pk;
 	return cal(n/p,p,pk)*a%pk;
 }
-ll exlucas(ll n,ll m,ll mod){
-	ll p[30],k[30],cnt=0;
+ll p[30],k[30],cnt=0;
+ll crt_a[30],crt_n[30];
+void pre_exlucas(ll mod){
 	for(ll i=2;i*i<=mod;++i){
 		if(mod%i==0){
 			p[++cnt]=i;
@@ -102,25 +104,40 @@ ll exlucas(ll n,ll m,ll mod){
 		p[++cnt]=mod;
 		k[cnt]=1;
 	}
-    ll crt_a[cnt+1],crt_n[cnt+1];
 	for(int i=1;i<=cnt;++i){
-		ll pk=fpow(p[i],k[i]);
-		pre_cal(p[i],pk);
+		crt_n[i]=fpow(p[i],k[i]);
+		pre_cal(fact[i],p[i],crt_n[i]);
+	}
+}
+ll exlucas(ll n,ll m){
+	for(int i=1;i<=cnt;++i){
+		ll pk=crt_n[i];
+		fac=fact[i];
 		ll fz=cal(n,p[i],pk);
 		ll fm=cal(m,p[i],pk)*cal(n-m,p[i],pk)%pk;
 		ll fm_inv=mod_inverse(fm,pk);
 		crt_a[i]=fz*fm_inv%pk*fpow(p[i],vn(n,p[i])-vn(m,p[i])-vn(n-m,p[i]),pk)%pk;
-		crt_n[i]=pk;
 	}
     ll re=CRT(crt_a,crt_n,cnt);
 	return re;
 }
 signed main(){
 	ios::sync_with_stdio(false),cin.tie(nullptr);
-	ll n,m,p;
-	cin>>n>>m>>p;
-	cout<<exlucas(n,m,p)<<endl;
-
-
+	const ll mod=999911659;
+	pre_exlucas(mod-1);
+	ll n,g,k=0;
+	cin>>n>>g;
+	if(g%mod==0){
+		cout<<0<<endl;
+		return 0;
+	}
+	for(ll i=1;i*i<=n;++i){
+		if(n%i==0){
+			k=(k+exlucas(n,i))%(mod-1);
+			if(i*i!=n)
+				k=(k+exlucas(n,n/i))%(mod-1);
+		}
+	}
+	cout<<fpow(g,k,mod)<<endl;
 	return 0;
 }
